@@ -1,0 +1,131 @@
+=================================================
+|		   Cara menjalankan STREET FOOD		    |
+=================================================
+
+1. run xampp atau laragon dan masuk ke database
+2. buat database dengan nama sesuai di .env
+	DB_CONNECTION=mysql
+	DB_HOST=127.0.0.1
+	DB_PORT=3306
+	DB_DATABASE=snacks <---- bagian ini sesuaikan dengan nama di database anda
+	DB_USERNAME=root
+	DB_PASSWORD=
+
+3. lanjut buka terminal dan jalankan "php artisan migrate --seed", jika tidak bisa "php artisan migrate:fresh --seed"
+4. kemudian jalankan  "php artisan serve"
+5. masuk ke halaman website Street Food
+
+===========================================================================================================================
+
+----------------------------------
+| 		KETERANGAN VERSI		 |
+----------------------------------
+- Versi Laravel	: Laravel Framework 12.49.0
+- Versi PHP		: PHP 8.5.5
+- Versi Composer: Composer version 2.9.5
+
+===========================================================================================================================
+
+----------------------------------
+| KETERANGAN ROLE ADMIN dan USER |
+----------------------------------
+=== Sebagai ADMIN ===
+	Email	: admin@gmail.com 
+	Password: admin123
+
+Bisa apa saja
+	1. Melakukan CRUD (Membuat nama menu, Harga, Deskripsi serta memberi Gambar)
+	2. Melihat Orderan (Pesanan) dari User dan melakukan konfirmasi
+	3. Melihat Total setiap User, Pesanan, Menu yang masuk di Website
+
+=== Sebagai USER ===
+	Email	: guest@gmail.com 
+	Password: guest123
+
+Bisa apa saja
+	1. Melakukan pesanan di menu dan akan masuk ke keranjang
+	2. Melihat keranjang jika tidak sesuai bisa di hapus, kemudian di lakukan order (Konfirmasi Pesanan)
+	3. Melihat Pesanan yang di order user dalam status (menunggu), dan terdapat riwayat pesanan yang sudah di konfirmasi oleh user dalam status (selesai)
+
+===========================================================================================================================================================================
+
+-----------------------------------
+| KETERANGAN SEEDER DAN MIGRATION |
+-----------------------------------
+SEEDER Berisi Data 
+- ADMIN dan USER 	=> 	- ADMIN 
+						  Email: admin@gmail.com 
+						  Password: admin123 
+
+			   			- USER 
+						  Email: guest@gmail.com
+						  Password: guest123
+
+- MENU Street Food	=> 	- nama_menu: Spicy Tteokbokki, harga: 25000, deskripsi: Kue beras kenyal khas Korea...
+			  			- nama_menu: Takoyaki Octopus, harga: 20000, deskripsi: Bola-bola gurita panas...
+			  			- nama_menu: Corndog Mozzarella, harga: 18000, deskripsi: Sosis berbalut keju mozzarella...
+
+
+MIGRATION Berisi Tabel
+1. Tabel Users  : Berisi User (Pengguna) dan 1 Admin Street Food 
+2. Tabel Menus	: Berisi menu snacks dan makanan street food
+3. Tabel Orders	: Berisi Pesanan user setelah memilih menu dan berstatus menunggu konfirmasi dari admin
+
+===========================================================================================================================
+
+# 📂 Struktur Folder Street Food (laravel-app)
+
+```text
+laravel-app/
+├── app/                        <-- [LOGIKA UTAMA]
+│   ├── Http/
+│   │   └── Controllers/
+│   │       ├── AuthController.php      <-- Login, Register, & Logout
+│   │       ├── CartController.php      <-- Keranjang Belanja
+│   │       ├── Controller.php          <-- Base Controller
+│   │       ├── MenuController.php      <-- CRUD Menu (Admin) & List Menu (User)
+│   │       └── OrderController.php     <-- Pengaturan Pesanan & Konfirmasi
+│   └── Models/
+│       ├── Menu.php                    <-- Model data Menu
+│       ├── Order.php                   <-- Model data Pesanan
+│       └── User.php                    <-- Model data User/Admin
+│
+├── database/                   		<-- [DATABASE]
+│   ├── migrations/             		<-- Struktur Tabel Database
+│   │   ├── 0001_01_01_000000_create_users_table.php	<-- Tabel Users
+│   │   ├── 2026_04_28_154600_create_menus_table.php	<-- Tabel menus
+│   │   └── 2026_04_29_034044_create_orders_table.php	<-- Tabel orders
+│   └── seeders/                
+│       ├── DatabaseSeeder.php	 
+│       ├── MenuSeeder.php				<-- Data Dummy Menu Street Food 
+│       └── UserSeeder.php				<-- Data Dummy User dan Admin
+│
+├── resources/                  		<-- [TAMPILAN & ASET RAW]
+│   ├── css/                    
+│   ├── js/                     
+│   └── views/                  
+│       ├── admin/
+│       │   ├── admin_menus.blade.php   <-- Kelola Menu
+│       │   ├── admin_orders.blade.php  <-- Kelola Pesanan
+│       │   └── dashboard.blade.php     <-- Dashboard Admin
+│       ├── auth/
+│       │   ├── login.blade.php			<-- Halaman Register
+│       │   └── register.blade.php		<-- Halaman Login
+│       ├── layouts/
+│       │   ├── admin_layout.blade.php  <-- Template Admin (Navbar)
+│       │   └── app.blade.php           <-- Template User (Side-Bar)
+│       ├── user/
+│       │   ├── beranda.blade.php       <-- Home User
+│       │   ├── cart.blade.php          <-- Keranjang
+│       │   ├── menu.blade.php          <-- Daftar Menu
+│       │   └── riwayat.blade.php       <-- Riwayat Pesanan
+│       └── welcome.blade.php
+│
+├── routes/                     <-- [RUTE]
+│   └── web.php                 <-- Link/URL Website ke Halaman lain
+├── storage/                    <-- [PENYIMPANAN] File upload, logs, & cache
+├── tests/                      <-- [TESTING] Untuk menguji aplikasi
+├── .env                        <-- [RAHASIA] Setting Database & App Key
+├── composer.json               <-- Daftar Library Backend
+└── package.json                <-- Daftar Library Frontend
+```
