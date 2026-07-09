@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Menu;
 use App\Models\Order;
+use App\Models\OrderDetail;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
@@ -23,36 +24,22 @@ class DashboardController extends Controller
             ->groupBy('tanggal')
             ->orderBy('tanggal')
             ->get();
-        $orders = DB::table('orders')->pluck('items');
-        $menuCounts = [];
-            foreach ($orders as $items) {
-        $menus = explode(',', $items);
-            foreach ($menus as $menu) {
-        $menu = trim($menu);
-        // Menghapus "1x ", "2x ", dll.
-        $menu = preg_replace('/^\d+x\s*/', '', $menu);
 
-            if (!isset($menuCounts[$menu])) {
-            $menuCounts[$menu] = 0;
-             }
-        $menuCounts[$menu]++;
-            }
-        }
-
-        arsort($menuCounts);
-
-        $bestSeller = collect($menuCounts)
-            ->filter(function ($total) {
-            return $total > 1; // hanya tampilkan yang terjual lebih dari 1 kali
-            })
+        // [Relasi Data] Menu terlaris dihitung dari tabel order_details
+        // (relasi order_details -> menus), bukan lagi parsing string manual.
+        $bestSeller = OrderDetail::select('menu_id', DB::raw('SUM(qty) as total'))
+            ->with('menu')
+            ->groupBy('menu_id')
+            ->having('total', '>', 1) // hanya tampilkan yang terjual lebih dari 1 kali
+            ->orderByDesc('total')
             ->take(5)
-            ->map(function ($total, $menu) {
-            return [
-            'items' => $menu,
-            'total' => $total
-            ];
-        })
+            ->get()
+            ->map(fn ($row) => [
+                'items' => $row->menu->nama_menu ?? 'Menu Dihapus',
+                'total' => $row->total,
+            ])
             ->values();
+
             return view('admin.dashboard', [
             'countUser' => $countUser,
             'countMenu' => $countMenu,

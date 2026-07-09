@@ -50,10 +50,10 @@ Route::middleware('auth')->group(function () {
 });
 
 /*
-ADMIN ROUTES (Harus Login)
+ADMIN ROUTES (Harus Login DAN role = admin)
 */
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'admin'])->group(function () {
 
     // Dashboard
     Route::get('/admin/dashboard', [DashboardController::class, 'index']);
@@ -67,6 +67,10 @@ Route::middleware('auth')->group(function () {
     // Kelola Pesanan
     Route::get('/admin/orders', [OrderController::class, 'adminIndex'])->name('admin.orders');
     Route::post('/admin/orders/konfirmasi/{id}', [OrderController::class, 'konfirmasi']);
+
+    // Grafik & Laporan PDF
+    Route::get('/admin/orders/chart-data', [OrderController::class, 'chartData']);
+    Route::post('/admin/orders/save-chart', [OrderController::class, 'saveChartImage']);
     Route::get('/admin/orders/pdf', [OrderController::class, 'exportPDF'])
     ->name('orders.pdf');
 });
